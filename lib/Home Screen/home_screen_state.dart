@@ -1,15 +1,20 @@
+import 'package:appify_book/models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../client/base_state.dart';
 
 class HomeScreenState extends BaseState {
-  TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController postController = TextEditingController();
   var isBalanceShow = false.obs;
-  final TextEditingController referTextController =
-      TextEditingController(text: '5FLK2M');
+  final TextEditingController commentController = TextEditingController();
 
   var isLikes = false.obs;
   var showReaction = false.obs;
+  var useBg = false.obs;
+  var addImage = false.obs;
+  var currentPostIndex = 0.obs;
+
+  var postList = <PostModel>[].obs;
 
   var urls = <String>[
     'images/imag1.jpg',
