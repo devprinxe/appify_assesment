@@ -10,9 +10,11 @@ class HomeScreenState extends BaseState {
 
   var isLikes = false.obs;
   var showReaction = false.obs;
+  var showCommentReaction = false.obs;
   var useBg = false.obs;
   var addImage = false.obs;
   var currentPostIndex = 0.obs;
+  var currentCommentIndex = 0.obs;
 
   var postList = <PostModel>[].obs;
 

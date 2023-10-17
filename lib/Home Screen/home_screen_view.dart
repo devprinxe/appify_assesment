@@ -212,7 +212,115 @@ class HomeScreenView extends StatelessWidget {
                             trailing: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.edit),
+                                GestureDetector(
+                                  onTap: () {
+                                    state.postController.text =
+                                        state.postList.value[i].body!;
+                                    showModalBottomSheet(
+                                        isScrollControlled: true,
+                                        context: context,
+                                        builder: (_) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(20.0),
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  bottom: MediaQuery.of(context)
+                                                      .viewInsets
+                                                      .bottom),
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  AppTextField(
+                                                    textFieldType:
+                                                        TextFieldType.MULTILINE,
+                                                    controller:
+                                                        state.postController,
+                                                    maxLines: 5,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                            hintText:
+                                                                "What\'s on your mind"),
+                                                  ),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  Obx(() => CheckboxListTile(
+                                                      value: state.useBg.value,
+                                                      controlAffinity:
+                                                          ListTileControlAffinity
+                                                              .leading,
+                                                      title: Text(
+                                                          "Use Background Image"),
+                                                      onChanged: (var val) {
+                                                        state.useBg.value =
+                                                            val!;
+                                                        state.addImage.value =
+                                                            false;
+                                                      })),
+                                                  Obx(() => Visibility(
+                                                        visible:
+                                                            !state.useBg.value,
+                                                        child: CheckboxListTile(
+                                                            value: state
+                                                                .addImage.value,
+                                                            controlAffinity:
+                                                                ListTileControlAffinity
+                                                                    .leading,
+                                                            title: Text(
+                                                                "Add Images in post"),
+                                                            onChanged:
+                                                                (var val) {
+                                                              state.addImage
+                                                                  .value = val!;
+                                                            }),
+                                                      )),
+                                                  SizedBox(
+                                                    height: 10,
+                                                  ),
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        state.postList
+                                                            .removeAt(i);
+                                                        List<ReactionsModel>
+                                                            reactions = [];
+                                                        reactions.add(
+                                                            ReactionsModel(
+                                                                "Like",
+                                                                "images/like.json"));
+                                                        reactions.add(
+                                                            ReactionsModel(
+                                                                "wow",
+                                                                "images/wow.json"));
+                                                        reactions.add(
+                                                            ReactionsModel(
+                                                                "love",
+                                                                "images/love.json"));
+                                                        state.postList.value.insert(
+                                                            i,
+                                                            PostModel(
+                                                                state
+                                                                    .postController
+                                                                    .text,
+                                                                state.useBg
+                                                                    .value,
+                                                                state.addImage
+                                                                        .value
+                                                                    ? state.urls
+                                                                    : null,
+                                                                reactions));
+                                                        state.postController
+                                                            .clear();
+                                                        finish(context);
+                                                      },
+                                                      child: Text("Add Post"))
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        });
+                                  },
+                                  child: Icon(Icons.edit),
+                                ),
                                 SizedBox(
                                   width: 10.0,
                                 ),
@@ -294,33 +402,170 @@ class HomeScreenView extends StatelessWidget {
                                                         NeverScrollableScrollPhysics(),
                                                     shrinkWrap: true,
                                                     itemBuilder: (_, index) {
+                                                      return ListTile(
+                                                        isThreeLine: true,
+                                                        title: Text(
+                                                            "${state.postList.value[i].comments.value[index].body}"),
+                                                        subtitle: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            SizedBox(
+                                                              height: 50,
+                                                              child: ListView
+                                                                  .builder(
+                                                                physics:
+                                                                    NeverScrollableScrollPhysics(),
+                                                                shrinkWrap:
+                                                                    true,
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                itemBuilder: (_,
+                                                                    int indexR) {
+                                                                  return Row(
+                                                                    children: [
+                                                                      Lottie.asset(
+                                                                          state
+                                                                              .postList
+                                                                              .value[i]
+                                                                              .comments[index]
+                                                                              .reactions![indexR]
+                                                                              .image!,
+                                                                          height: 10,
+                                                                          width: 10),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            4,
+                                                                      ),
+                                                                      Obx(() => Text(state
+                                                                          .postList
+                                                                          .value[
+                                                                              i]
+                                                                          .comments[
+                                                                              index]
+                                                                          .reactions![
+                                                                              indexR]
+                                                                          .count
+                                                                          .value
+                                                                          .toString())),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            10,
+                                                                      )
+                                                                    ],
+                                                                  );
+                                                                },
+                                                                itemCount: state
+                                                                    .postList
+                                                                    .value[i]
+                                                                    .comments[
+                                                                        index]
+                                                                    .reactions!
+                                                                    .length,
+                                                              ),
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                GestureDetector(
+                                                                  onTap: () {
+                                                                    state.showCommentReaction
+                                                                            .value =
+                                                                        !state
+                                                                            .showCommentReaction
+                                                                            .value;
+                                                                    state.currentCommentIndex
+                                                                            .value =
+                                                                        index;
+                                                                  },
+                                                                  child: Text(
+                                                                      "Like"),
+                                                                ),
+                                                                Obx(() =>
+                                                                    Visibility(
+                                                                      visible: state
+                                                                              .showCommentReaction
+                                                                              .value &&
+                                                                          index ==
+                                                                              state.currentCommentIndex.value,
+                                                                      child:
+                                                                          Row(
+                                                                        children: [
+                                                                          Container(
+                                                                            padding: const EdgeInsets.only(
+                                                                                left: 30.0,
+                                                                                right: 30,
+                                                                                top: 10,
+                                                                                bottom: 10),
+                                                                            decoration:
+                                                                                BoxDecoration(
+                                                                              border: Border.all(color: AppColors.borderBoxColor),
+                                                                              borderRadius: BorderRadius.circular(50.0),
+                                                                            ),
+                                                                            child:
+                                                                                Row(
+                                                                              mainAxisSize: MainAxisSize.min,
+                                                                              children: [
+                                                                                GestureDetector(
+                                                                                  onTap: () {
+                                                                                    state.postList.value[i].comments[index].reactions![0].count.value++;
+                                                                                    state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                                  },
+                                                                                  child: Lottie.asset(state.postList.value[i].comments[index].reactions![0].image!, height: 40, width: 40),
+                                                                                ),
+                                                                                GestureDetector(
+                                                                                  onTap: () {
+                                                                                    state.postList.value[i].comments[index].reactions![1].count.value++;
+                                                                                    state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                                  },
+                                                                                  child: Lottie.asset(state.postList.value[i].comments[index].reactions![1].image!, height: 40, width: 40),
+                                                                                ),
+                                                                                GestureDetector(
+                                                                                  onTap: () {
+                                                                                    state.postList.value[i].comments[index].reactions![2].count.value++;
+                                                                                    state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                                  },
+                                                                                  child: Lottie.asset(state.postList.value[i].comments[index].reactions![2].image!, height: 40, width: 40),
+                                                                                ),
+                                                                              ],
+                                                                            ),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    )),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        trailing:
+                                                            GestureDetector(
+                                                          onTap: () {
+                                                            state
+                                                                .postList
+                                                                .value[i]
+                                                                .comments
+                                                                .value
+                                                                .removeAt(
+                                                                    index);
+                                                            state
+                                                                .postList
+                                                                .value[i]
+                                                                .comments
+                                                                .refresh();
+                                                          },
+                                                          child: Icon(
+                                                            Icons.delete,
+                                                            color: Colors.red,
+                                                          ),
+                                                        ),
+                                                      );
                                                       return Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .spaceBetween,
                                                         children: [
                                                           Text(
-                                                              "${state.postList.value[i].comments.value[index].body}"),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              state
-                                                                  .postList
-                                                                  .value[i]
-                                                                  .comments
-                                                                  .value
-                                                                  .removeAt(
-                                                                      index);
-                                                              state
-                                                                  .postList
-                                                                  .value[i]
-                                                                  .comments
-                                                                  .refresh();
-                                                            },
-                                                            child: Icon(
-                                                              Icons.delete,
-                                                              color: Colors.red,
-                                                            ),
-                                                          ),
+                                                              "${state.postList.value[i].comments.value[index]}"),
                                                         ],
                                                       );
                                                     })),
@@ -544,6 +789,133 @@ class HomeScreenView extends StatelessWidget {
                                                               shrinkWrap: true,
                                                               itemBuilder:
                                                                   (_, index) {
+                                                                return ListTile(
+                                                                  isThreeLine:
+                                                                      true,
+                                                                  title: Text(
+                                                                      "${state.postList.value[i].comments.value[index].body}"),
+                                                                  subtitle:
+                                                                      Column(
+                                                                    crossAxisAlignment:
+                                                                        CrossAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      SizedBox(
+                                                                        height:
+                                                                            50,
+                                                                        child: ListView
+                                                                            .builder(
+                                                                          physics:
+                                                                              NeverScrollableScrollPhysics(),
+                                                                          shrinkWrap:
+                                                                              true,
+                                                                          scrollDirection:
+                                                                              Axis.horizontal,
+                                                                          itemBuilder:
+                                                                              (_, int indexR) {
+                                                                            return Row(
+                                                                              children: [
+                                                                                Lottie.asset(state.postList.value[i].comments[index].reactions![indexR].image!, height: 10, width: 10),
+                                                                                SizedBox(
+                                                                                  width: 4,
+                                                                                ),
+                                                                                Obx(() => Text(state.postList.value[i].comments[index].reactions![indexR].count.value.toString())),
+                                                                                SizedBox(
+                                                                                  width: 10,
+                                                                                )
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                          itemCount: state
+                                                                              .postList
+                                                                              .value[i]
+                                                                              .comments[index]
+                                                                              .reactions!
+                                                                              .length,
+                                                                        ),
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          GestureDetector(
+                                                                            onTap:
+                                                                                () {
+                                                                              state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                              state.currentCommentIndex.value = index;
+                                                                            },
+                                                                            child:
+                                                                                Text("Like"),
+                                                                          ),
+                                                                          Obx(() =>
+                                                                              Visibility(
+                                                                                visible: state.showCommentReaction.value && index == state.currentCommentIndex.value,
+                                                                                child: Row(
+                                                                                  children: [
+                                                                                    Container(
+                                                                                      padding: const EdgeInsets.only(left: 30.0, right: 30, top: 10, bottom: 10),
+                                                                                      decoration: BoxDecoration(
+                                                                                        border: Border.all(color: AppColors.borderBoxColor),
+                                                                                        borderRadius: BorderRadius.circular(50.0),
+                                                                                      ),
+                                                                                      child: Row(
+                                                                                        mainAxisSize: MainAxisSize.min,
+                                                                                        children: [
+                                                                                          GestureDetector(
+                                                                                            onTap: () {
+                                                                                              state.postList.value[i].comments[index].reactions![0].count.value++;
+                                                                                              state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                                            },
+                                                                                            child: Lottie.asset(state.postList.value[i].comments[index].reactions![0].image!, height: 40, width: 40),
+                                                                                          ),
+                                                                                          GestureDetector(
+                                                                                            onTap: () {
+                                                                                              state.postList.value[i].comments[index].reactions![1].count.value++;
+                                                                                              state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                                            },
+                                                                                            child: Lottie.asset(state.postList.value[i].comments[index].reactions![1].image!, height: 40, width: 40),
+                                                                                          ),
+                                                                                          GestureDetector(
+                                                                                            onTap: () {
+                                                                                              state.postList.value[i].comments[index].reactions![2].count.value++;
+                                                                                              state.showCommentReaction.value = !state.showCommentReaction.value;
+                                                                                            },
+                                                                                            child: Lottie.asset(state.postList.value[i].comments[index].reactions![2].image!, height: 40, width: 40),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                    ),
+                                                                                  ],
+                                                                                ),
+                                                                              )),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  trailing:
+                                                                      GestureDetector(
+                                                                    onTap: () {
+                                                                      state
+                                                                          .postList
+                                                                          .value[
+                                                                              i]
+                                                                          .comments
+                                                                          .value
+                                                                          .removeAt(
+                                                                              index);
+                                                                      state
+                                                                          .postList
+                                                                          .value[
+                                                                              i]
+                                                                          .comments
+                                                                          .refresh();
+                                                                    },
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .delete,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    ),
+                                                                  ),
+                                                                );
                                                                 return Row(
                                                                   mainAxisAlignment:
                                                                       MainAxisAlignment
@@ -551,29 +923,6 @@ class HomeScreenView extends StatelessWidget {
                                                                   children: [
                                                                     Text(
                                                                         "${state.postList.value[i].comments.value[index]}"),
-                                                                    GestureDetector(
-                                                                      onTap:
-                                                                          () {
-                                                                        state
-                                                                            .postList
-                                                                            .value[i]
-                                                                            .comments
-                                                                            .value
-                                                                            .removeAt(index);
-                                                                        state
-                                                                            .postList
-                                                                            .value[i]
-                                                                            .comments
-                                                                            .refresh();
-                                                                      },
-                                                                      child:
-                                                                          Icon(
-                                                                        Icons
-                                                                            .delete,
-                                                                        color: Colors
-                                                                            .red,
-                                                                      ),
-                                                                    ),
                                                                   ],
                                                                 );
                                                               })),
