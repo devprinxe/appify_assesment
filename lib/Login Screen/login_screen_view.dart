@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:loading_overlay/loading_overlay.dart';
 import 'package:nb_utils/nb_utils.dart';
+import 'package:pinput/pinput.dart';
 
 import '../../utils/common_buttons.dart';
 import '../../utils/constansts.dart';
@@ -110,13 +111,144 @@ class LoginScreenView extends StatelessWidget {
                       children: [
                         InkWell(
                           onTap: () {
-                            Get.dialog(
-                              Container(
-                                child: Column(
-                                  children: [Text("Forgot Password")],
-                                ),
-                              ),
-                            );
+                            showModalBottomSheet(
+                                context: context,
+                                builder: (_) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context)
+                                              .viewInsets
+                                              .bottom),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AppTextField(
+                                            textFieldType: TextFieldType.EMAIL,
+                                            controller:
+                                                state.emailAddressController,
+                                            maxLines: 5,
+                                            decoration: const InputDecoration(
+                                                border: OutlineInputBorder(),
+                                                hintText:
+                                                    "Enter email address"),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          ElevatedButton(
+                                              onPressed: () {
+                                                finish(context);
+                                                showModalBottomSheet(
+                                                    context: context,
+                                                    builder: (_) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(20.0),
+                                                        child: Padding(
+                                                          padding: EdgeInsets.only(
+                                                              bottom: MediaQuery
+                                                                      .of(context)
+                                                                  .viewInsets
+                                                                  .bottom),
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Pinput(
+                                                                length: 6,
+                                                                showCursor:
+                                                                    true,
+                                                                onCompleted:
+                                                                    (pin) =>
+                                                                        print(
+                                                                            pin),
+                                                              ),
+                                                              SizedBox(
+                                                                height: 10,
+                                                              ),
+                                                              ElevatedButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    finish(
+                                                                        context);
+                                                                    showModalBottomSheet(
+                                                                        isScrollControlled:
+                                                                            true,
+                                                                        context:
+                                                                            context,
+                                                                        builder:
+                                                                            (_) {
+                                                                          return Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.all(20.0),
+                                                                            child:
+                                                                                Padding(
+                                                                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+                                                                              child: Column(
+                                                                                mainAxisSize: MainAxisSize.min,
+                                                                                children: [
+                                                                                  AppTextField(
+                                                                                    textFieldType: TextFieldType.PASSWORD,
+                                                                                    decoration: const InputDecoration(
+                                                                                        prefixIcon: Icon(Icons.lock_open),
+                                                                                        border: OutlineInputBorder(
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                                                                          borderSide: BorderSide(
+                                                                                            color: AppColors.ashTextColor,
+                                                                                          ),
+                                                                                        ),
+                                                                                        labelText: "New Password",
+                                                                                        hintText: "Enter new password"),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  AppTextField(
+                                                                                    textFieldType: TextFieldType.PASSWORD,
+                                                                                    decoration: const InputDecoration(
+                                                                                        prefixIcon: Icon(Icons.lock_open),
+                                                                                        border: OutlineInputBorder(
+                                                                                          borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                                                                                          borderSide: BorderSide(
+                                                                                            color: AppColors.ashTextColor,
+                                                                                          ),
+                                                                                        ),
+                                                                                        labelText: "Confirm Password",
+                                                                                        hintText: "Retype new password"),
+                                                                                  ),
+                                                                                  SizedBox(
+                                                                                    height: 10,
+                                                                                  ),
+                                                                                  ElevatedButton(
+                                                                                      onPressed: () {
+                                                                                        finish(context);
+                                                                                      },
+                                                                                      child: Text("Reset Password"))
+                                                                                ],
+                                                                              ),
+                                                                            ),
+                                                                          );
+                                                                        });
+                                                                  },
+                                                                  child: Text(
+                                                                      "Verify"))
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    });
+                                              },
+                                              child: Text(
+                                                  "Send Verification code"))
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
                           },
                           child: Text(
                             "Forgot Password?",

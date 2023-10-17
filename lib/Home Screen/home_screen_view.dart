@@ -300,7 +300,7 @@ class HomeScreenView extends StatelessWidget {
                                                                 .spaceBetween,
                                                         children: [
                                                           Text(
-                                                              "${state.postList.value[i].comments.value[index]}"),
+                                                              "${state.postList.value[i].comments.value[index].body}"),
                                                           GestureDetector(
                                                             onTap: () {
                                                               state
@@ -342,13 +342,26 @@ class HomeScreenView extends StatelessWidget {
                                                 ),
                                                 ElevatedButton(
                                                     onPressed: () {
+                                                      List<ReactionsModel>
+                                                          reactions = [];
+                                                      reactions.add(ReactionsModel(
+                                                          "Like",
+                                                          "images/like.json"));
+                                                      reactions.add(
+                                                          ReactionsModel("wow",
+                                                              "images/wow.json"));
+                                                      reactions.add(ReactionsModel(
+                                                          "love",
+                                                          "images/love.json"));
                                                       state.postList.value[i]
                                                           .comment.value++;
                                                       state.postList.value[i]
                                                           .comments.value
-                                                          .add(state
-                                                              .commentController
-                                                              .text);
+                                                          .add(CommentsModel(
+                                                              state
+                                                                  .commentController
+                                                                  .text,
+                                                              reactions));
                                                       state.commentController
                                                           .clear();
                                                       finish(context);
@@ -584,6 +597,20 @@ class HomeScreenView extends StatelessWidget {
                                                       ),
                                                       ElevatedButton(
                                                           onPressed: () {
+                                                            List<ReactionsModel>
+                                                                reactions = [];
+                                                            reactions.add(
+                                                                ReactionsModel(
+                                                                    "Like",
+                                                                    "images/like.json"));
+                                                            reactions.add(
+                                                                ReactionsModel(
+                                                                    "wow",
+                                                                    "images/wow.json"));
+                                                            reactions.add(
+                                                                ReactionsModel(
+                                                                    "love",
+                                                                    "images/love.json"));
                                                             state
                                                                 .postList
                                                                 .value[i]
@@ -594,9 +621,11 @@ class HomeScreenView extends StatelessWidget {
                                                                 .value[i]
                                                                 .comments
                                                                 .value
-                                                                .add(state
-                                                                    .commentController
-                                                                    .text);
+                                                                .add(CommentsModel(
+                                                                    state
+                                                                        .commentController
+                                                                        .text,
+                                                                    reactions));
                                                             state
                                                                 .commentController
                                                                 .clear();
