@@ -16,7 +16,7 @@ class SplashScreenLogic extends GetxController {
 
   _splashTImer() async {
     Timer(const Duration(seconds: 2), () {
-      Get.toNamed(MainAppRoutes.loginScreen);
+      Get.toNamed(MainAppRoutes.homeScreen);
     });
   }
 }
