@@ -27,7 +27,7 @@ class HomeScreenLogic extends GetxController {
             aspectRatio: 16 / 9,
             fit: BoxFit.contain,
             controlsConfiguration: BetterPlayerControlsConfiguration(
-                showControls: true,),
+                showControls: false,),
             autoPlay: true),
         betterPlayerDataSource: BetterPlayerDataSource(
           BetterPlayerDataSourceType.network,

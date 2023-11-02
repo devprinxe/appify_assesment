@@ -17,7 +17,10 @@ class HomeScreenState extends BaseState {
   var currentPostIndex = 0.obs;
   var currentCommentIndex = 0.obs;
   var showMenu = true.obs;
+  var showEmoji = false.obs;
   var maxLineDesc = 3.obs;
+  var showDrawer = false.obs;
+  TextEditingController commentReplyController=  TextEditingController();
 
   var postList = <PostModel>[].obs;
 
@@ -30,10 +33,10 @@ class HomeScreenState extends BaseState {
     'images/image6.jpg',
   ];
 
-  var betterPlayerController = BetterPlayerController(
-      const BetterPlayerConfiguration(
-        aspectRatio: 16 / 9,
-        fit: BoxFit.contain,
-      )).obs;
+  var betterPlayerController =
+      BetterPlayerController(const BetterPlayerConfiguration(
+    aspectRatio: 16 / 9,
+    fit: BoxFit.contain,
+  )).obs;
   GlobalKey betterPlayerKey = GlobalKey();
 }
